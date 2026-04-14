@@ -1,28 +1,13 @@
 package com.devfolio.identity.service;
 
-import com.devfolio.identity.domain.entity.User;
-import com.devfolio.identity.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import com.devfolio.identity.dto.response.UserResponse;
 
-@Service
-@RequiredArgsConstructor
-public class UserService {
+import java.util.UUID;
 
-    private final UserRepository userRepository;
+public interface UserService {
+    // Contract: "anyone who needs user-read operations depends on this interface."
 
-    public User getByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Username not found"));
-
-    }
-
-    public User getByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
-
-    }
-
-    public void updateProfile(User user) {}
+    UserResponse getUserById(UUID id);
+    // Loads a user by primary key and returns a SAFE view (no password).
+    // Used by: UserController.me() — reads the user ID from the JWT principal.
 }

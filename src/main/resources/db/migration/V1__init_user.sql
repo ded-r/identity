@@ -5,8 +5,8 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     role VARCHAR(255) NOT NULL,
-    created_at DATE(255) NOT NULL,
-    updated_at DATE(255) NOT NULL
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL
 );
 
---still not performed sql because i did not run the app
+--still not performed SQL because I did not run the app yet
