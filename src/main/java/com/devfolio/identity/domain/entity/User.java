@@ -2,6 +2,7 @@ package com.devfolio.identity.domain.entity;
 
 import com.devfolio.identity.domain.enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.Instant;
@@ -20,15 +21,19 @@ public class User {
     private UUID id;
 
     @Column(unique = true, nullable = false)
+    @Size(max = 255)
     private String username;
 
     @Column(unique = true, nullable = false)
+    @Size(max = 255)
     private String email;
 
     @Column(nullable = false)
+    @Size(max = 255)
     private String password;
 
     @Column(nullable = false, name = "full_name")
+    @Size(max = 255)
     private String fullName;
 
     @Enumerated(EnumType.STRING)

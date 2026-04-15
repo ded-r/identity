@@ -9,13 +9,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.net.http.HttpHeaders;
 import java.util.UUID;
 
 @Component
@@ -44,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Protected endpoints will be rejected by Spring Security's
             // "anyRequest().authenticated()" rule later in the filter chain.
             filterChain.doFilter(request, response);
+            return;
         }
 
         String token = header.substring(7);
@@ -62,6 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Token is invalid, expired, or malformed.
             // Return 401 immediately. Do NOT continue the filter chain.
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
 
         // ── Step 3: Build the principal and set the security context ──

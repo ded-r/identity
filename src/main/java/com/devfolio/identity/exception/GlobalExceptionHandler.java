@@ -3,6 +3,8 @@ package com.devfolio.identity.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,10 +25,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleValidation(
             MethodArgumentNotValidException ex, HttpServletRequest request
     ) {
-        String message = ex.getBindingResult().getFieldErrors().stream()
-                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+        String message = ex.getBindingResult().getAllErrors().stream()
+                .map(GlobalExceptionHandler::formatBindingError)
                 .collect(Collectors.joining("; "));
-        // Joins all field errors: "email: Email is required; password: Password is required"
+        // Field errors: "email: ...". Class-level (@PasswordMatch) are ObjectErrors — not in getFieldErrors().
 
         return buildResponse(HttpStatus.BAD_REQUEST, message, request);
     }
@@ -66,5 +68,12 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(body);
         // Sets the HTTP status code AND returns the JSON body.
+    }
+
+    private static String formatBindingError(ObjectError err) {
+        if (err instanceof FieldError fe) {
+            return fe.getField() + ": " + fe.getDefaultMessage();
+        }
+        return err.getDefaultMessage() != null ? err.getDefaultMessage() : err.getCode();
     }
 }
