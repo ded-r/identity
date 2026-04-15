@@ -1,11 +1,13 @@
 package com.devfolio.identity.dto.request;
 
+import com.devfolio.identity.validation.annotation.PasswordMatch;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
+@PasswordMatch()
 public class RegisterRequest {
 
     @NotBlank
@@ -22,4 +24,7 @@ public class RegisterRequest {
     @NotBlank(message = "Password is required")
     @Size(min = 8, max = 16, message = "Password must be between 8 and 16 characters")
     private String password;
+
+    @NotBlank(message = "Confirm password is required")
+    private String confirmPassword;
 }
